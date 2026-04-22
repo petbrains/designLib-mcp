@@ -1,0 +1,72 @@
+{
+  "enterprise_muted": {
+    "name_en": "Enterprise Muted",
+    "description": "Restrained, professional iOS UI with desaturated palettes, tabular data emphasis, and subdued accents. Trades visual flair for legibility and operational density.",
+    "visual_signatures": ["muted_palette", "tabular_numerics", "tight_density", "system_chrome"],
+    "emotional_keywords": ["trustworthy", "professional", "efficient", "calm"],
+    "anti_patterns": ["saturated_brand_accent", "playful_illustration", "decorative_motion"]
+  },
+  "fitness_vitality": {
+    "name_en": "Fitness Vitality",
+    "description": "High-energy iOS UI built around motion data, vivid metric pills, gradient halos, and ring-style progress indicators.",
+    "visual_signatures": ["metric_pill", "ring_progress", "gradient_accents", "tabular_numerics"],
+    "emotional_keywords": ["energetic", "achievement", "vital", "motivating"],
+    "anti_patterns": ["dense_text_lists", "muted_palette", "serif_typography"]
+  },
+  "editorial_photography": {
+    "name_en": "Editorial Photography",
+    "description": "Image-led iOS UI where photography drives the surface, type recedes into supporting role, and chrome is intentionally minimal.",
+    "visual_signatures": ["full_bleed_imagery", "minimal_chrome", "thin_typography", "generous_whitespace"],
+    "emotional_keywords": ["aspirational", "premium", "considered", "atmospheric"],
+    "anti_patterns": ["dense_data_grids", "saturated_chrome", "rounded_playful_shapes"]
+  },
+  "minimalist_monochrome": {
+    "name_en": "Minimalist Monochrome",
+    "description": "Restricted-palette iOS UI built around grayscale surfaces with a single accent, generous spacing, and uniform geometry.",
+    "visual_signatures": ["grayscale_surfaces", "single_accent", "uniform_radii", "comfortable_density"],
+    "emotional_keywords": ["focused", "calm", "uncluttered", "intentional"],
+    "anti_patterns": ["multi_accent_palettes", "decorative_imagery", "ornamental_typography"]
+  },
+  "data_dense_terminal": {
+    "name_en": "Data-Dense Terminal",
+    "description": "Compact iOS UI for power users: tabular layouts, mono accents, tight row heights, and command-style affordances.",
+    "visual_signatures": ["compact_density", "mono_accents", "tabular_grids", "fixed_width_glyphs"],
+    "emotional_keywords": ["efficient", "expert", "precise", "utilitarian"],
+    "anti_patterns": ["spacious_density", "photographic_imagery", "playful_illustration"]
+  },
+  "warm_handcrafted": {
+    "name_en": "Warm Handcrafted",
+    "description": "Tactile iOS UI with warm earth-tone palettes, soft gradients, hand-feel iconography, and approachable typography.",
+    "visual_signatures": ["warm_palette", "soft_gradients", "hand_iconography", "rounded_geometry"],
+    "emotional_keywords": ["welcoming", "human", "tactile", "soft"],
+    "anti_patterns": ["cool_blue_palettes", "sharp_geometry", "neutral_grayscale"]
+  },
+  "editorial_canvas": {
+    "name_en": "Editorial Canvas",
+    "description": "Magazine-inflected iOS UI: serif headings, structured columnar layouts, generous spacing, content-first chrome.",
+    "visual_signatures": ["serif_headings", "columnar_layout", "generous_whitespace", "muted_chrome"],
+    "emotional_keywords": ["literary", "considered", "calm", "intentional"],
+    "anti_patterns": ["sans_only_typography", "dense_grids", "neon_accents"]
+  },
+  "tactile_depth_playful": {
+    "name_en": "Tactile Depth Playful",
+    "description": "iOS UI that leans on depth, shadow, and 3D-feeling controls; bouncy motion and saturated highlights.",
+    "visual_signatures": ["soft_shadows", "depth_layers", "bouncy_motion", "saturated_accents"],
+    "emotional_keywords": ["delightful", "playful", "tangible", "energetic"],
+    "anti_patterns": ["flat_minimal_surfaces", "muted_palette", "tight_density"]
+  },
+  "youth_social_widget": {
+    "name_en": "Youth Social Widget",
+    "description": "Vibrant iOS UI optimized for short-form social, widget cards, and expressive avatars; bold accents on light surfaces.",
+    "visual_signatures": ["bold_accents", "widget_cards", "expressive_avatars", "rounded_chrome"],
+    "emotional_keywords": ["expressive", "playful", "social", "current"],
+    "anti_patterns": ["serif_typography", "muted_palette", "dense_grids"]
+  },
+  "system_default_plus": {
+    "name_en": "System Default Plus",
+    "description": "iOS UI that hews close to native HIG with light brand customization: SF Pro typography, system chrome, single brand accent.",
+    "visual_signatures": ["sf_pro_typography", "system_chrome", "single_brand_accent", "comfortable_density"],
+    "emotional_keywords": ["familiar", "reliable", "polished", "neutral"],
+    "anti_patterns": ["custom_chrome_overrides", "dense_data_grids", "ornamental_typography"]
+  }
+}
