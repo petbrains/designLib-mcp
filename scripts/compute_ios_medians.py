@@ -124,3 +124,68 @@ def aggregate_palette(apps: list[dict], mode: str) -> dict | None:
             values.append(pal.get(role))
         out[role] = median_hex_lab(values)
     return out
+
+
+from collections import Counter
+from statistics import median
+
+CONFIDENCE_WEIGHT = {"high": 1.0, "medium": 0.6, "low": 0.0}
+
+
+def _mode(values: list) -> str | None:
+    cleaned = [v for v in values if v]
+    if not cleaned:
+        return None
+    return Counter(cleaned).most_common(1)[0][0]
+
+
+def aggregate_typography(apps: list[dict]) -> dict:
+    body = [a.get("typography", {}).get("body") for a in apps]
+    heading = [a.get("typography", {}).get("heading") for a in apps]
+    return {
+        "body_classification": _mode(body),
+        "heading_classification": _mode(heading),
+        "mono_present": any(a.get("typography", {}).get("mono_present") for a in apps),
+        "tabular_numerics_present": any(
+            a.get("typography", {}).get("tabular_numerics_present") for a in apps
+        ),
+    }
+
+
+def aggregate_layout(apps: list[dict]) -> dict:
+    densities = [a.get("layout", {}).get("density_typical") for a in apps]
+    list_styles = [a.get("layout", {}).get("list_style_dominant") for a in apps]
+    radii = [
+        a.get("layout", {}).get("corner_radius_cards_pt_median")
+        for a in apps
+        if a.get("layout", {}).get("corner_radius_cards_pt_median") is not None
+    ]
+    return {
+        "density_typical": _mode(densities),
+        "list_style_dominant": _mode(list_styles),
+        "corner_radius_cards_pt_median": median(radii) if radii else None,
+    }
+
+
+def aggregate_liquid_glass(apps: list[dict]) -> dict:
+    postures = [a.get("liquid_glass", {}).get("posture") for a in apps]
+    surface_counts: Counter[str] = Counter()
+    n_apps = len(apps)
+    for a in apps:
+        for s in a.get("liquid_glass", {}).get("surfaces_affected_union", []):
+            surface_counts[s] += 1
+    threshold = 0.70 * n_apps
+    surfaces = sorted(s for s, c in surface_counts.items() if c >= threshold)
+    return {"posture": _mode(postures) or "unclear", "surfaces_affected": surfaces}
+
+
+def aggregate_iconography(apps: list[dict]) -> str | None:
+    return _mode([a.get("iconography", {}).get("icon_system") for a in apps])
+
+
+def top_reference_apps(apps: list[dict], top_n: int) -> list[str]:
+    def score(app: dict) -> float:
+        weight = CONFIDENCE_WEIGHT.get(app.get("_confidence", "low"), 0.0)
+        return float(app.get("screenshot_count", 0)) * weight
+    ranked = sorted(apps, key=score, reverse=True)
+    return [a["slug"] for a in ranked[:top_n]]

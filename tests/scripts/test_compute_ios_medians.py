@@ -51,3 +51,44 @@ def test_aggregate_palette_returns_none_when_no_apps_have_dark():
     apps = _load_apps()
     palette = aggregate_palette(apps, mode="dark")
     assert palette is None
+
+
+from scripts.compute_ios_medians import (
+    aggregate_typography, aggregate_layout, aggregate_liquid_glass,
+    aggregate_iconography, top_reference_apps,
+)
+
+
+def test_aggregate_typography_majority_vote():
+    apps = _load_apps()
+    typo = aggregate_typography(apps)
+    assert typo["body_classification"] == "sf_pro_text"
+    assert typo["heading_classification"] == "sf_pro_display"
+
+
+def test_aggregate_layout_uses_mode_and_median():
+    apps = _load_apps()
+    layout = aggregate_layout(apps)
+    assert layout["density_typical"] == "comfortable"
+    assert layout["list_style_dominant"] == "plain"
+    assert layout["corner_radius_cards_pt_median"] == 18.0
+
+
+def test_aggregate_liquid_glass_keeps_70_percent_surfaces():
+    apps = _load_apps()
+    lg = aggregate_liquid_glass(apps)
+    assert lg["posture"] == "native_fit"
+    assert "tab_bar" in lg["surfaces_affected"]
+    assert "toolbar" not in lg["surfaces_affected"]
+
+
+def test_aggregate_iconography_mode():
+    apps = _load_apps()
+    icon = aggregate_iconography(apps)
+    assert icon == "custom_glyph_set"
+
+
+def test_top_reference_apps_weights_confidence():
+    apps = _load_apps()
+    refs = top_reference_apps(apps, top_n=3)
+    assert refs == ["gamma", "alpha", "beta"]
