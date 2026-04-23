@@ -1,0 +1,37 @@
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+.env
+.env.*
+.env.local
+
+# Source-only ingest inputs — never shipped
+dump/
+extraction/
+researches/
+
+# Dev-only
+tests/
+docs/
+migrations/
+scripts/
+data/
+
+.git/
+.github/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+*.md
+!README.md
