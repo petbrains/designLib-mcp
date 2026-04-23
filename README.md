@@ -108,18 +108,3 @@ HTTP endpoint: `POST /mcp`.
   }
 }
 ```
-
-**Deploy to Railway:**
-
-```bash
-npm i -g @railway/cli
-railway login
-railway init                   # Empty Project
-railway add                    # Empty Service — link when prompted
-railway variables --set "SUPABASE_URL=https://your-project.supabase.co" \
-                  --set "SUPABASE_ANON_KEY=sb_publishable_..."
-railway up                     # builds Dockerfile, deploys
-railway domain                 # generate *.up.railway.app URL
-```
-
-Railway injects `PORT`; the Dockerfile sets `DESIGNLIB_TRANSPORT=http`; the server binds `0.0.0.0:$PORT`. Secrets live only in Railway Variables.
