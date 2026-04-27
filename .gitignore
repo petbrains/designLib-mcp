@@ -3,6 +3,8 @@
 dump/
 extraction/
 researches/
+images/
+extracted/
 
 # Python
 __pycache__/

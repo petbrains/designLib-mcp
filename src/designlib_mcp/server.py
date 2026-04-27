@@ -5,7 +5,7 @@ from designlib_mcp.config import Settings
 from designlib_mcp.repository.supabase_repo import SupabaseRepository
 from designlib_mcp.tools import (
     styles, palettes, font_pairs, domains,
-    chart_types, landing_patterns, icons,
+    chart_types, landing_patterns, icons, inspiration_pages,
 )
 
 
@@ -20,4 +20,5 @@ def build_server() -> FastMCP:
     chart_types.register(mcp, repo)
     landing_patterns.register(mcp, repo)
     icons.register(mcp, repo)
+    inspiration_pages.register(mcp, repo)
     return mcp

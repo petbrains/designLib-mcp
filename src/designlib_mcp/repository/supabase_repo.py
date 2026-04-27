@@ -13,6 +13,7 @@ from designlib_mcp.repository.normalizer import (
     _to_chart_type_summary, _to_chart_type_full,
     _to_landing_pattern_summary, _to_landing_pattern_full,
     _to_icon_summary, _to_icon_full,
+    _to_inspiration_page_summary, _to_inspiration_page_full,
 )
 
 
@@ -490,4 +491,104 @@ class SupabaseRepository:
             "categories": [{"value": v, "count": c} for v, c in cats.most_common()],
             "libraries": [{"value": v, "count": c} for v, c in libs.most_common()],
             "styles": [{"value": v, "count": c} for v, c in styles.most_common()],
+        }
+
+    # -------------------------------------------------------------------------
+    # Inspiration pages
+    # -------------------------------------------------------------------------
+
+    def list_inspiration_pages(
+        self, *, page_type: str | None = None, appearance: str | None = None,
+        style_family: str | None = None, industry: str | None = None,
+        density: str | None = None, mood: str | None = None,
+        keyword: str | None = None, signature: str | None = None,
+        good_for_product_type: str | None = None, good_for_stage: str | None = None,
+        limit: int = 25, offset: int = 0,
+    ) -> dict[str, Any]:
+        cols = (
+            "id, page_type, appearance, style_family, industry, mood, keywords, "
+            "screenshot_path, description"
+        )
+        q = self._client.table("inspiration_pages").select(cols, count="exact")
+        if page_type:
+            q = q.eq("page_type", page_type)
+        if appearance:
+            q = q.eq("appearance", appearance)
+        if style_family:
+            q = q.eq("style_family", style_family)
+        if industry:
+            q = q.eq("industry", industry)
+        if density:
+            q = q.eq("density", density)
+        if mood:
+            q = q.contains("mood", [mood])
+        if signature:
+            q = q.contains("visual_signatures", [signature])
+        if good_for_product_type:
+            q = q.contains("good_for_product_types", [good_for_product_type])
+        if good_for_stage:
+            q = q.contains("good_for_stages", [good_for_stage])
+        if keyword:
+            q = q.contains("keywords", [keyword.strip().lower()])
+        q = q.order("id").range(offset, offset + limit - 1)
+        resp = q.execute()
+        rows = resp.data or []
+        return {
+            "items": [_to_inspiration_page_summary(r) for r in rows],
+            "total_count": resp.count or len(rows),
+            "limit": limit,
+            "offset": offset,
+        }
+
+    def get_inspiration_page(self, page_id: str) -> dict[str, Any] | None:
+        resp = self._client.table("inspiration_pages").select("*").eq("id", page_id).limit(1).execute()
+        rows = resp.data or []
+        if not rows:
+            return None
+        return _to_inspiration_page_full(rows[0])
+
+    def list_inspiration_page_facets(self) -> dict[str, Any]:
+        resp = self._client.table("inspiration_pages").select(
+            "page_type, appearance, density, style_family, industry, mood, "
+            "visual_signatures, good_for_product_types, good_for_stages"
+        ).execute()
+        rows = resp.data or []
+        page_types: Counter[str] = Counter()
+        appearances: Counter[str] = Counter()
+        densities: Counter[str] = Counter()
+        families: Counter[str] = Counter()
+        industries: Counter[str] = Counter()
+        moods: Counter[str] = Counter()
+        sigs: Counter[str] = Counter()
+        gfpt: Counter[str] = Counter()
+        gfs: Counter[str] = Counter()
+        for r in rows:
+            if r.get("page_type"):
+                page_types[r["page_type"]] += 1
+            if r.get("appearance"):
+                appearances[r["appearance"]] += 1
+            if r.get("density"):
+                densities[r["density"]] += 1
+            if r.get("style_family"):
+                families[r["style_family"]] += 1
+            if r.get("industry"):
+                industries[r["industry"]] += 1
+            for m in r.get("mood") or []:
+                moods[m] += 1
+            for s in r.get("visual_signatures") or []:
+                sigs[s] += 1
+            for x in r.get("good_for_product_types") or []:
+                gfpt[x] += 1
+            for x in r.get("good_for_stages") or []:
+                gfs[x] += 1
+        return {
+            "page_types": [{"value": v, "count": c} for v, c in page_types.most_common()],
+            "appearances": [{"value": v, "count": c} for v, c in appearances.most_common()],
+            "densities": [{"value": v, "count": c} for v, c in densities.most_common()],
+            "style_families": [{"value": v, "count": c} for v, c in families.most_common(50)],
+            "industries": [{"value": v, "count": c} for v, c in industries.most_common(50)],
+            "moods": [{"value": v, "count": c} for v, c in moods.most_common()],
+            "visual_signatures": [{"value": v, "count": c} for v, c in sigs.most_common()],
+            "good_for_product_types": [{"value": v, "count": c} for v, c in gfpt.most_common()],
+            "good_for_stages": [{"value": v, "count": c} for v, c in gfs.most_common()],
         }

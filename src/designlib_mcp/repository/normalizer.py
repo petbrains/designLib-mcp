@@ -216,6 +216,66 @@ def _to_icon_full(row: dict) -> dict[str, Any]:
     }
 
 
+def _to_inspiration_page_summary(row: dict) -> dict[str, Any]:
+    description = (row.get("description") or "")
+    return {
+        "id": row["id"],
+        "page_type": row.get("page_type") or "",
+        "appearance": row.get("appearance") or "",
+        "style_family": row.get("style_family"),
+        "industry": row.get("industry"),
+        "mood": row.get("mood") or [],
+        "keywords": (row.get("keywords") or [])[:8],
+        "screenshot_path": row.get("screenshot_path") or "",
+        "description": description[:240],
+    }
+
+
+def _to_inspiration_page_full(row: dict) -> dict[str, Any]:
+    captured_at = row.get("captured_at")
+    if captured_at is not None and not isinstance(captured_at, str):
+        captured_at = str(captured_at)
+    return {
+        "id": row["id"],
+        "source": row.get("source") or "",
+        "url_guess": row.get("url_guess"),
+        "captured_at": captured_at or "",
+        "screenshot_path": row.get("screenshot_path") or "",
+
+        "page_type": row.get("page_type") or "",
+        "landing_pattern_id": row.get("landing_pattern_id"),
+        "style_family": row.get("style_family"),
+        "industry": row.get("industry"),
+        "product_category": row.get("product_category"),
+        "audience": row.get("audience"),
+        "appearance": row.get("appearance") or "",
+        "density": row.get("density"),
+        "mood": row.get("mood") or [],
+
+        "visual_signatures": row.get("visual_signatures") or [],
+        "keywords": row.get("keywords") or [],
+        "good_for_product_types": row.get("good_for_product_types") or [],
+        "good_for_moods": row.get("good_for_moods") or [],
+        "good_for_stages": row.get("good_for_stages") or [],
+        "section_order": row.get("section_order") or [],
+
+        "palette": row.get("palette") or {},
+        "typography": row.get("typography") or {},
+        "primary_cta": row.get("primary_cta"),
+        "sections": row.get("sections") or [],
+        "inspiration_metadata": row.get("inspiration_metadata") or {},
+        "reference_for": row.get("reference_for") or {},
+        "effects": row.get("effects") or [],
+        "interaction_cues": row.get("interaction_cues") or [],
+        "generation_constraints": row.get("generation_constraints"),
+
+        "description": row.get("description") or "",
+        "why_it_works": row.get("why_it_works") or "",
+        "generation_prompt": row.get("generation_prompt"),
+        "notes": row.get("notes"),
+    }
+
+
 def _to_domain_full(row: dict) -> dict[str, Any]:
     cat_name = ""
     cat = row.get("domain_categories")

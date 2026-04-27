@@ -90,3 +90,17 @@ class CatalogRepository(Protocol):
     def get_icon(self, icon_id: str) -> dict[str, Any] | None: ...
 
     def list_icon_facets(self) -> dict[str, Any]: ...
+
+    # Inspiration pages
+    def list_inspiration_pages(
+        self, *, page_type: str | None = None, appearance: str | None = None,
+        style_family: str | None = None, industry: str | None = None,
+        density: str | None = None, mood: str | None = None,
+        keyword: str | None = None, signature: str | None = None,
+        good_for_product_type: str | None = None, good_for_stage: str | None = None,
+        limit: int = 25, offset: int = 0,
+    ) -> dict[str, Any]: ...
+
+    def get_inspiration_page(self, page_id: str) -> dict[str, Any] | None: ...
+
+    def list_inspiration_page_facets(self) -> dict[str, Any]: ...
