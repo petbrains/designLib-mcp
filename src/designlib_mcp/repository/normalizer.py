@@ -298,3 +298,34 @@ def _to_domain_full(row: dict) -> dict[str, Any]:
         "ui_patterns": row.get("ui_patterns") or [],
         "examples": row.get("examples") or [],
     }
+
+
+def _to_animation_summary(row: dict) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "title": row.get("title") or row["id"],
+        "description": row.get("description") or "",
+        "category": row.get("category") or "",
+        "framework": row.get("framework") or "",
+        "complexity": row.get("complexity") or "",
+        "style_tags": row.get("style_tags") or [],
+    }
+
+
+def _to_animation_full(row: dict) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "title": row.get("title") or row["id"],
+        "description": row.get("description") or "",
+        "use_when": row.get("use_when") or [],
+        "category": row.get("category") or "",
+        "framework": row.get("framework") or "",
+        "libraries": row.get("libraries") or [],
+        "interactivity": row.get("interactivity") or "",
+        "complexity": row.get("complexity") or "",
+        "style_tags": row.get("style_tags") or [],
+        "placement": row.get("placement") or [],
+        "keyword": row.get("keyword") or [],
+        "component_filename": row.get("component_filename") or "",
+        "prompt_text": row.get("prompt_text") or "",
+    }
