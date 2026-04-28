@@ -1,0 +1,18 @@
+{
+  "id": "animation_test_sample",
+  "title": "Test Sample",
+  "description": "A test animation.",
+  "use_when": ["loading_data"],
+  "category": "loader",
+  "framework": "react",
+  "libraries": ["framer-motion"],
+  "interactivity": "static",
+  "complexity": "light",
+  "style_tags": ["minimal"],
+  "placement": ["loading_screen"],
+  "keyword": ["test", "sample"],
+  "component_filename": "test-sample.tsx",
+  "prompt_text": "# Test Sample\n\nA test animation.\n",
+  "source_file": "fixture.md",
+  "source_index": 0
+}
