@@ -1,5 +1,5 @@
 # Source-only working directories used by ingest scripts.
-# Not part of the shipped MCP library. See docs/superpowers/specs/2026-04-22-designlib-mcp-v1-design.md §2.
+# Not part of the shipped MCP library — kept locally on the maintainer's machine.
 dump/
 extraction/
 researches/
@@ -32,3 +32,13 @@ build/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Internal working docs belong in a private repo, not here.
+# These patterns prevent re-introducing internal content on accident.
+docs/superpowers/
+docs/internal/
+docs/plans/
+docs/specs/
+docs/_archive/
+docs/**/_FAILED_TO_FIX.md
+20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]-*.md
