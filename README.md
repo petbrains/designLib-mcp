@@ -4,7 +4,7 @@
 > Stop letting Claude / Cursor / Copilot guess hex codes and font pairings. Give them a real, opinionated source of truth — over MCP.
 
 **Live server:** `https://designlib-production.up.railway.app/mcp`
-**Catalog:** 67 styles · 100 palettes · 34 font pairs · 134 domains · 25 chart types · 34 landing patterns · 105 icons · web + iOS
+**Catalog:** 67 styles · 100 palettes · 34 font pairs · 134 domains · 25 chart types · 34 landing patterns · 105 icons · 405 inspiration pages · 120 animations · web + iOS
 **Status:** v1, production, read-only.
 
 ---
@@ -13,17 +13,19 @@
 
 When you ask an LLM to "design a landing page for a fintech dashboard," it will happily invent `#2B7FFF`, pair Inter with Playfair, and move on. The tokens are plausible. They are also made up. Five prompts later the design has drifted, nothing matches, and you are hand-fixing colors that were never rooted in anything.
 
-**designlib-mcp** replaces that guessing with a retrieval step. It exposes a hand-curated catalog of design styles, palettes, typography and domain recommendations through the Model Context Protocol, so any MCP-aware client (Claude Code, Claude Desktop, Cursor, IDE plugins) can fetch authoritative tokens on demand:
+**designlib-mcp** replaces that guessing with a retrieval step. It exposes a hand-curated catalog of design styles, palettes, typography, domain recommendations, real-world references and animation snippets through the Model Context Protocol, so any MCP-aware client (Claude Code, Claude Desktop, Cursor, IDE plugins) can fetch authoritative tokens on demand:
 
-- Palettes with explicit role mapping (`primary`, `surface`, `text_primary`, contrast pairs) — not just five hexes.
-- Font pairs with weights, fallbacks, sources and `style_fit` tags.
-- Styles that bundle palette + typography + spacing + density into a cohesive token set.
-- Domains (e.g. *fintech_dashboard*, *fitness_app*) with pre-computed top-N recommendations per platform.
-- Chart types with when-to-use / when-NOT-to-use guidance, accessibility grades and library recommendations.
-- Landing patterns with section order, CTA placement and conversion optimization notes.
-- Icons keyed to library, category and style, with ready-to-paste import code and usage snippets.
+- **Palettes** with explicit role mapping (`primary`, `surface`, `text_primary`, contrast pairs) — not just five hexes.
+- **Font pairs** with weights, fallbacks, sources and `style_fit` tags.
+- **Styles** that bundle palette + typography + spacing + density into a cohesive token set.
+- **Domains** (e.g. *fintech_dashboard*, *fitness_app*) with pre-computed top-N recommendations per platform.
+- **Chart types** with when-to-use / when-NOT-to-use guidance, accessibility grades and library recommendations.
+- **Landing patterns** with section order, CTA placement and conversion optimization notes.
+- **Icons** keyed to library, category and style, with ready-to-paste import code and usage snippets.
+- **Inspiration pages** — curated real-world page references tagged by style family, industry, mood and signature.
+- **Animations** with library, category, complexity and ready-to-paste snippets.
 
-The server is **read-only by design**. It does not write to your repo, does not call OpenAI, does not ship telemetry. It answers queries over stdio or HTTP and that's it.
+The server is **read-only by design**. It does not write to your repo, does not call OpenAI, does not ship telemetry. It answers MCP queries and that's it.
 
 ## When to use it
 
@@ -38,88 +40,50 @@ Skip it when:
 
 - You already have a mature design system — use your own tokens.
 - You need editable / writable storage — this server is read-only.
-- You need brand-specific assets (logos, illustrations, icons). This catalog is about **tokens and style direction**, not brand identity.
+- You need brand-specific assets (logos, illustrations, custom icons). This catalog is about **tokens and style direction**, not brand identity.
 
 ---
 
 ## Install
 
-### Hosted (recommended)
+Zero infra, zero secrets on your machine. Just point your MCP client at the hosted server.
 
-Zero infra, zero secrets on your machine. Point your MCP client at the hosted server.
-
-**Claude Code:**
+### Claude Code
 
 ```bash
 claude mcp add --transport http designlib https://designlib-production.up.railway.app/mcp
 claude mcp list
 ```
 
-**Cursor / Windsurf / other MCP-aware clients:** add an HTTP MCP server entry pointing at `https://designlib-production.up.railway.app/mcp`.
+### Cursor / Windsurf / other MCP-aware clients
 
-**Claude Desktop** does not speak streamable-http yet — self-host over stdio (below).
+Add an HTTP MCP server entry pointing at `https://designlib-production.up.railway.app/mcp`.
 
-### Self-hosted
+### Claude Desktop
 
-Run your own copy when you want to customize the catalog, keep data inside your infra, or serve Claude Desktop over stdio.
+Claude Desktop does not speak streamable-http natively — bridge it with [`mcp-remote`](https://www.npmjs.com/package/mcp-remote). Edit `claude_desktop_config.json`:
 
-**1. Provision Supabase.** Free tier is fine. From Project Settings → API, capture `SUPABASE_URL` and `SUPABASE_ANON_KEY`. From Settings → Database, capture `DATABASE_URL` (used only by the migration script). Copy `.env.example` → `.env` and fill them in.
-
-**2. Install:**
-
-```bash
-python -m venv .venv
-source .venv/Scripts/activate     # Windows bash; POSIX: .venv/bin/activate
-pip install -e ".[dev]"
-```
-
-**3. Migrate + seed:**
-
-```bash
-python scripts/apply_migrations.py
-python scripts/ingest_web.py
-python scripts/compute_ios_medians.py
-python scripts/ingest_ios.py
-python scripts/ingest_content_catalog.py   # charts + landing patterns + icons
-```
-
-> The content-catalog ingest writes to RLS-protected tables, so it needs `SUPABASE_SERVICE_ROLE_KEY` in `.env` (or a `DATABASE_URL` with admin privileges if you adapt the script). The server itself keeps reading through the public anon key.
-
-**4. Run:**
-
-```bash
-# stdio — Claude Desktop and other local MCP clients
-designlib-mcp
-
-# streamable-http — Claude Code and hosted deployments
-designlib-mcp --http --port 8000
-# or via env:
-DESIGNLIB_TRANSPORT=http PORT=8000 designlib-mcp
-```
-
-HTTP endpoint: `POST /mcp`.
-
-**Claude Desktop config (stdio)** — `%APPDATA%\Claude\claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`):
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 
 ```json
 {
   "mcpServers": {
     "designlib": {
-      "command": "designlib-mcp",
-      "env": {
-        "SUPABASE_URL": "https://your-project.supabase.co",
-        "SUPABASE_ANON_KEY": "sb_publishable_..."
-      }
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://designlib-production.up.railway.app/mcp"]
     }
   }
 }
 ```
 
+Restart Claude Desktop and the `designlib` tools should appear.
+
 ---
 
 ## Tools
 
-All 21 tools are read-only and platform-aware where applicable. Every `list_*` supports `limit` / `offset`; every `get_*` returns a `NOT_FOUND` payload when the id does not exist.
+All 27 tools are read-only and platform-aware where applicable. Every `list_*` supports `limit` / `offset`; every `get_*` returns a `NOT_FOUND` payload when the id does not exist.
 
 | Tool | Purpose | Key args |
 |---|---|---|
@@ -130,3 +94,5 @@ All 21 tools are read-only and platform-aware where applicable. Every `list_*` s
 | `list_chart_types` · `get_chart_type` · `list_chart_type_facets` | Chart types with when-to-use, accessibility grades, library picks | `data_type`, `a11y_grade`, `library`, `keyword` |
 | `list_landing_patterns` · `get_landing_pattern` · `list_landing_pattern_facets` | Landing page layouts with section order and CTA placement | `keyword`, `cta_placement` |
 | `list_icons` · `get_icon` · `list_icon_facets` | Individual icons with import code and usage snippets | `category`, `library`, `style`, `keyword` |
+| `list_inspiration_pages` · `get_inspiration_page` · `list_inspiration_page_facets` | Curated real-world page references | `page_type`, `style_family`, `industry`, `mood`, `keyword` |
+| `list_animations` · `get_animation` · `list_animation_facets` | Animation snippets with library, category, complexity | `category`, `framework`, `complexity`, `library`, `keyword` |
